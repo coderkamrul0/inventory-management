@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 
 import { Schema, model } from 'mongoose';
-import { IUser } from './user.interface';
+import { IUser, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<IUser, UserModel>(
   {
     name: {
       type: String,
@@ -23,7 +23,7 @@ const userSchema = new Schema<IUser>(
     },
     status: {
       type: String,
-      enum: ['active', 'inActive'],
+      enum: ['active', 'blocked'],
       default: 'active',
     },
     isDeleted: {
@@ -43,4 +43,15 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-export const User = model<IUser>('User', userSchema);
+userSchema.statics.isUserExistsByCustomEmail = async function (email: string) {
+  return await User.findOne({ email });
+};
+
+userSchema.statics.isPasswordMatched = async function (
+  plainTextPassword,
+  hashedPassword,
+) {
+  return await bcrypt.compare(plainTextPassword, hashedPassword);
+};
+
+export const User = model<IUser, UserModel>('User', userSchema);
