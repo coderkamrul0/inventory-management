@@ -10,5 +10,16 @@ router.post(
   validateRequest(customerValidationSchema.createCustomerValidationSchema),
   customerController.createCustomer,
 );
+router.get('/', customerController.getAllCustomer);
+
+router.get('/:customerId', customerController.getSingleCustomer);
+
+router.patch(
+  '/:customerId',
+  validateRequest(customerValidationSchema.updateCustomerValidationSchema),
+  customerController.updateCustomer,
+);
+
+router.delete('/:customerId', customerController.deleteCustomer);
 
 export const customerRoutes = router;
