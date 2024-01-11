@@ -10,6 +10,7 @@ const loginUser = async (payload: ILoginUser) => {
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found !');
   }
+  console.log(user);
 
   const userStatus = user?.status;
   if (userStatus === 'blocked') {
@@ -20,7 +21,7 @@ const loginUser = async (payload: ILoginUser) => {
     throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched');
 
   const jwtPayload = {
-    userEmail: user.email,
+    userEmail: user.email
   };
 
   const accessToken = createToken(
